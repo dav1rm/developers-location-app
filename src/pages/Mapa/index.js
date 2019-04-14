@@ -30,18 +30,18 @@ export default class App extends Component {
   };
 
   render() {
+    const { region, users } = this.state;
     return (
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          region={this.state.region}
-          style={{ flex: 1 }}
+          region={region}
+          style={styles.container}
           onRegionChange={() => this.onRegionChange}
-          initialRegion={this.state.region}
           showsUserLocation
           onLongPress={e => this.showLocation(e)}
         >
-          {this.state.users.map(user => (
+          {users.map(user => (
             <Marker
               key={user.latlng.latitude}
               coordinate={user.latlng}
