@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { View } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
+import Button from '~/components/Button';
 
 import styles from './styles';
 
@@ -15,24 +16,30 @@ export default class Modal extends Component {
   }
 
   render() {
+    const { visible, username } = this.state;
     return (
       <Modal
         animationType="fade"
         transparent
-        visible={this.state.visible}
+        visible={visible}
         onRequestClose={() => {
-          this.setModalVisible(!this.state.visible);
+          this.setModalVisible(!visible);
         }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.contentModal}>
             <Text style={styles.titleModal}>Adicionar novo local</Text>
-            <TextInput style={styles.input} placeholder="Usuário no github" />
+            <TextInput
+              style={styles.input}
+              placeholder="Usuário no github"
+              value={username}
+              onChangeText={text => this.setState({ username: text })}
+            />
             <View style={styles.buttonArea}>
               <Button
                 title="Cancelar"
                 onPress={() => {
-                  this.setModalVisible(!this.state.visible);
+                  this.setModalVisible(!visible);
                 }}
               />
               <Button success title="Salvar" onPress={() => {}} />
