@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
+import styles from './styles';
+
 export default class App extends Component {
   state = {
     region: {
@@ -29,14 +31,15 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
+          region={this.state.region}
           style={{ flex: 1 }}
+          onRegionChange={() => this.onRegionChange}
           initialRegion={this.state.region}
           showsUserLocation
-          onRegionChange={() => this.onRegionChange}
-          onLongPress={this.showLocation}
+          onLongPress={e => this.showLocation(e)}
         >
           {this.state.users.map(user => (
             <Marker

@@ -29,7 +29,8 @@
       "asc",
       { "ignoreClassNames": true, "ignoreStyleProperties": true }
     ],
-    "react-native/no-raw-text": "off"
+    "react-native/no-raw-text": "off",
+    "react-native/no-color-literals": "off"
   },
   "settings": {
     "import/resolver": {
