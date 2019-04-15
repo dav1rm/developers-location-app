@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 
 import {
-  View, Text, TextInput, Modal as ModalComponent,
+  View, Text, TextInput, Modal as ModalComponent, ActivityIndicator,
 } from 'react-native';
 import Button from '~/components/Button';
 
@@ -24,6 +24,16 @@ class Modal extends Component {
         longitude: PropTypes.number,
       }),
     }).isRequired,
+    developers: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      bio: PropTypes.string,
+      avatar_url: PropTypes.string,
+      coordinate: PropTypes.shape({
+        latitude: PropTypes.number,
+        longitude: PropTypes.number,
+      }),
+    }).isRequired,
   };
 
   state = {
@@ -38,21 +48,19 @@ class Modal extends Component {
     const { username } = this.state;
 
     addDevelopersRequest(username, coordinate);
-
-    this.handleHideModal();
+    this.setState({ username: '' });
   };
 
   handleHideModal = () => {
     const { hiddenModal } = this.props;
 
     hiddenModal();
-
     this.setState({ username: '' });
   };
 
   render() {
     const { username } = this.state;
-    const { modal } = this.props;
+    const { modal, developers } = this.props;
     return (
       <ModalComponent
         animationType="fade"
@@ -69,10 +77,14 @@ class Modal extends Component {
               value={username}
               onChangeText={text => this.setState({ username: text })}
             />
-            <View style={styles.buttonArea}>
-              <Button title="Cancelar" onPress={() => this.handleHideModal()} />
-              <Button success title="Salvar" onPress={() => this.handleSubmit()} />
-            </View>
+            {developers.loading ? (
+              <ActivityIndicator />
+            ) : (
+              <View style={styles.buttonArea}>
+                <Button title="Cancelar" onPress={() => this.handleHideModal()} />
+                <Button success title="Salvar" onPress={() => this.handleSubmit()} />
+              </View>
+            )}
           </View>
         </View>
       </ModalComponent>
@@ -82,6 +94,7 @@ class Modal extends Component {
 
 const mapStateToProps = state => ({
   modal: state.modal,
+  developers: state.developers,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ ...ModalActions, ...DeveloperActions }, dispatch);

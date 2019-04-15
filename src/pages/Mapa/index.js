@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { PropTypes } from 'prop-types';
 
@@ -21,8 +21,6 @@ class Mapa extends Component {
         latitude: PropTypes.number,
         longitude: PropTypes.number,
       }),
-      error: PropTypes.bool.isRequired,
-      loading: PropTypes.bool.isRequired,
     }).isRequired,
   };
 
@@ -58,8 +56,6 @@ class Mapa extends Component {
             </Marker>
           ))}
         </MapView>
-        {developers.error && <Text style={styles.error}>Erro ao carregar</Text>}
-        {developers.loading && <Text style={styles.loading}>carregando...</Text>}
       </View>
     );
   }
