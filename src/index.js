@@ -1,7 +1,19 @@
 import '~/config/ReactotronConfig';
-import React from 'react';
-import Mapa from '~/pages/Mapa';
 
-const App = () => <Mapa />;
+import React, { Fragment } from 'react';
+import { Provider } from 'react-redux';
+import store from './store';
+
+import Mapa from '~/pages/Mapa';
+import Modal from '~/components/Modal';
+
+const App = () => (
+  <Provider store={store}>
+    <Fragment>
+      <Mapa />
+      <Modal />
+    </Fragment>
+  </Provider>
+);
 
 export default App;

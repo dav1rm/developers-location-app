@@ -8,12 +8,16 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "prop-types": "^15.7.2",
     "react": "16.8.3",
     "react-native": "0.59.3",
     "react-native-maps": "react-native-community/react-native-maps#master",
+    "react-redux": "^7.0.2",
     "reactotron-react-native": "^3.2.1",
     "reactotron-redux": "^3.1.0",
-    "reactotron-redux-saga": "^4.2.1"
+    "reactotron-redux-saga": "^4.2.1",
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

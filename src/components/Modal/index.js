@@ -1,30 +1,64 @@
 import React, { Component } from 'react';
+import { PropTypes } from 'prop-types';
 
-import { View, Text, TextInput } from 'react-native';
+import {
+  View, Text, TextInput, Modal as ModalComponent,
+} from 'react-native';
 import Button from '~/components/Button';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as ModalActions } from '~/store/ducks/modal';
+import { Creators as DeveloperActions } from '~/store/ducks/developers';
 
 import styles from './styles';
 
-export default class Modal extends Component {
+class Modal extends Component {
+  static propTypes = {
+    hiddenModal: PropTypes.func.isRequired,
+    addDevelopersRequest: PropTypes.func.isRequired,
+    modal: PropTypes.shape({
+      visible: PropTypes.bool,
+      coordinate: PropTypes.shape({
+        latitude: PropTypes.number,
+        longitude: PropTypes.number,
+      }),
+    }).isRequired,
+  };
+
   state = {
-    visible: false,
     username: '',
   };
 
-  setModalVisible(visible) {
-    this.setState({ visible });
-  }
+  handleSubmit = () => {
+    const {
+      addDevelopersRequest,
+      modal: { coordinate },
+    } = this.props;
+    const { username } = this.state;
+
+    addDevelopersRequest(username, coordinate);
+
+    this.handleHideModal();
+  };
+
+  handleHideModal = () => {
+    const { hiddenModal } = this.props;
+
+    hiddenModal();
+
+    this.setState({ username: '' });
+  };
 
   render() {
-    const { visible, username } = this.state;
+    const { username } = this.state;
+    const { modal } = this.props;
     return (
-      <Modal
+      <ModalComponent
         animationType="fade"
         transparent
-        visible={visible}
-        onRequestClose={() => {
-          this.setModalVisible(!visible);
-        }}
+        visible={modal.visible}
+        onRequestClose={() => this.handleHideModal()}
       >
         <View style={styles.modalContainer}>
           <View style={styles.contentModal}>
@@ -36,17 +70,23 @@ export default class Modal extends Component {
               onChangeText={text => this.setState({ username: text })}
             />
             <View style={styles.buttonArea}>
-              <Button
-                title="Cancelar"
-                onPress={() => {
-                  this.setModalVisible(!visible);
-                }}
-              />
-              <Button success title="Salvar" onPress={() => {}} />
+              <Button title="Cancelar" onPress={() => this.handleHideModal()} />
+              <Button success title="Salvar" onPress={() => this.handleSubmit()} />
             </View>
           </View>
         </View>
-      </Modal>
+      </ModalComponent>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  modal: state.modal,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({ ...ModalActions, ...DeveloperActions }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Modal);

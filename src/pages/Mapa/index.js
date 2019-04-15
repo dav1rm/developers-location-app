@@ -1,10 +1,31 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { PropTypes } from 'prop-types';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as ModalActions } from '~/store/ducks/modal';
 
 import styles from './styles';
 
-export default class App extends Component {
+class Mapa extends Component {
+  static propTypes = {
+    showModal: PropTypes.func.isRequired,
+    developers: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      bio: PropTypes.string,
+      avatar_url: PropTypes.string,
+      coordinate: PropTypes.shape({
+        latitude: PropTypes.number,
+        longitude: PropTypes.number,
+      }),
+      error: PropTypes.bool.isRequired,
+      loading: PropTypes.bool.isRequired,
+    }).isRequired,
+  };
+
   state = {
     region: {
       latitude: -27.2177659,
@@ -12,41 +33,33 @@ export default class App extends Component {
       latitudeDelta: 0.0042,
       longitudeDelta: 0.0031,
     },
-    users: [],
   };
 
   onRegionChange(region) {
     this.setState({ region });
   }
 
-  showLocation = (event) => {
-    const user = {
-      title: 'User qualquer',
-      description: 'Bla bla bla bla...',
-      latlng: event.nativeEvent.coordinate,
-    };
-
-    this.setState({ users: [...this.state.users, user] });
-  };
-
   render() {
-    const { region, users } = this.state;
+    const { developers, showModal } = this.props;
+    const { region } = this.state;
     return (
       <View style={styles.container}>
+        {developers.error && <Text style={styles.error}>Erro ao carregar</Text>}
+        {developers.loading && <Text style={styles.loading}>carregando...</Text>}
         <MapView
           provider={PROVIDER_GOOGLE}
           region={region}
           style={styles.container}
           onRegionChange={() => this.onRegionChange}
           showsUserLocation
-          onLongPress={e => this.showLocation(e)}
+          onLongPress={e => showModal(e.nativeEvent.coordinate)}
         >
-          {users.map(user => (
+          {developers.data.map(dev => (
             <Marker
-              key={user.latlng.latitude}
-              coordinate={user.latlng}
-              title={user.title}
-              description={user.description}
+              key={dev.id}
+              coordinate={dev.coordinate}
+              title={dev.name}
+              description={dev.bio}
             />
           ))}
         </MapView>
@@ -54,3 +67,14 @@ export default class App extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  developers: state.developers,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(ModalActions, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Mapa);
