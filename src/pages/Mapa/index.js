@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { PropTypes } from 'prop-types';
 
@@ -44,8 +44,6 @@ class Mapa extends Component {
     const { region } = this.state;
     return (
       <View style={styles.container}>
-        {developers.error && <Text style={styles.error}>Erro ao carregar</Text>}
-        {developers.loading && <Text style={styles.loading}>carregando...</Text>}
         <MapView
           provider={PROVIDER_GOOGLE}
           region={region}
@@ -55,14 +53,13 @@ class Mapa extends Component {
           onLongPress={e => showModal(e.nativeEvent.coordinate)}
         >
           {developers.data.map(dev => (
-            <Marker
-              key={dev.id}
-              coordinate={dev.coordinate}
-              title={dev.name}
-              description={dev.bio}
-            />
+            <Marker key={dev.id} coordinate={dev.coordinate} title={dev.name} description={dev.bio}>
+              <Image source={{ uri: dev.avatar_url }} style={styles.avatar} />
+            </Marker>
           ))}
         </MapView>
+        {developers.error && <Text style={styles.error}>Erro ao carregar</Text>}
+        {developers.loading && <Text style={styles.loading}>carregando...</Text>}
       </View>
     );
   }

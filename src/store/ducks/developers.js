@@ -17,6 +17,7 @@ const INITIAL_STATE = {
       id: 1,
       name: 'Davi',
       bio: 'alguma coisa',
+      avatar_url: 'https://avatars2.githubusercontent.com/u/6731139?s=88&v=4',
       coordinate: {
         latitude: -27.2177659,
         longitude: -49.6451598,
